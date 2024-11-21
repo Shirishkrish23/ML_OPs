@@ -42,4 +42,4 @@ jobs:
 
       - name: Push Docker Image
         run: |
-          docker push your_dockerhub_username/movie-recommender:$GITHUB_SHA
+          docker push shirishkrishna/movie-recommender:$GITHUB_SHA
