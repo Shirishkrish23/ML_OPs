@@ -12,10 +12,16 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        with:
+          lfs: true  # Enable Git LFS
 
+      - name: Set up Git LFS
+        run: |
+          git lfs install
+          git lfs pull
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.9"
 
@@ -24,23 +30,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
-
       - name: Run Tests
         run: |
-          # Add your test commands here
-          # For example, if using pytest:
           pytest
-
       - name: Build Docker Image
         run: |
-          docker build -t shirishkrishna/movie-recommender:$GITHUB_SHA .
-
+          docker build -t shirishkrishna/movie-recommender:${{ github.sha }} .
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME}}
-          password: ${{ secrets.DOCKERHUB_TOKEN}}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Push Docker Image
         run: |
-          docker push shirishkrishna/movie-recommender:$GITHUB_SHA
+          docker push shirishkrishna/movie-recommender:${{ github.sha }}
