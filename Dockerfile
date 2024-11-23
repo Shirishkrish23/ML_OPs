@@ -10,6 +10,9 @@ COPY . /app
 # Ensure that the necessary data files are in the image
 COPY u.data u.item /app/
 
+# Copy the optimized movie model file
+COPY optimized_movie_rating_model.pkl /app/
+
 # Install required packages from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
