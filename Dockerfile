@@ -20,4 +20,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000 9090 3000
 
 # Define the command to run the app
+
 CMD ["python", "app.py"]
