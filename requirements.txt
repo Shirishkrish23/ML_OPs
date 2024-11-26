@@ -2,3 +2,7 @@ pandas
 numpy
 scikit-learn
 flask
+pytest
+gunicorn
+prometheus-flask-exporter
+mlflow
