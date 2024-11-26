@@ -7,17 +7,17 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Ensure that the necessary data files are in the image
+# Copy data files
 COPY u.data u.item /app/
 
-# Copy the optimized movie model file
-COPY optimized_movie_rating_model.pkl /app/
+# Copy model and encoder
+COPY optimized_movie_rating_model.pkl title_encoder.pkl /app/
 
-# Install required packages from requirements.txt
+# Install required packages
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port 5000 for the Flask API
-EXPOSE 5000
+# Expose ports
+EXPOSE 5000 9090 3000
 
 # Define the command to run the app
 CMD ["python", "app.py"]
