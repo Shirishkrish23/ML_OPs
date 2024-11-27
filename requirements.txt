@@ -5,3 +5,4 @@ flask
 pytest
 opencensus-ext-azure
 opencensus-ext-flask
+prometheus-flask-exporter
