@@ -73,10 +73,11 @@ jobs:
             # Pull the latest images and start services
             docker-compose pull
             docker-compose up -d
+
   retrain-model:
     runs-on: ubuntu-latest
     needs: build-and-deploy
-    if: github.event.schedule
+    if: github.event_name == 'schedule'
 
     steps:
       - name: Checkout Code
@@ -97,3 +98,27 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
         run: |
           python retrain.py
+
+      - name: Commit and Push Updated Model
+        run: |
+          git config --local user.email "actions@users.noreply.github.com"
+          git config --local user.name "GitHub Actions"
+          git add optimized_movie_rating_model.pkl title_encoder.pkl
+          git commit -m "Update model after retraining" || echo "No changes to commit"
+          git push origin main
+
+      - name: Deploy Updated Model to VM
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.VM_IP_ADDRESS }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Navigate to the app directory
+            cd /home/${{ secrets.VM_USERNAME }}/movie-recommender
+
+            # Pull the latest images if retraining affects the Docker image
+            docker-compose pull
+
+            # Restart the Flask app to load the new model
+            docker-compose restart flask_app
