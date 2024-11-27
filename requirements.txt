@@ -3,6 +3,5 @@ numpy
 scikit-learn
 flask
 pytest
-gunicorn
-prometheus-flask-exporter
-mlflow
+opencensus-ext-azure
+opencensus-ext-flask
