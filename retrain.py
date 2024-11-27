@@ -5,6 +5,8 @@ import numpy as np
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
+import pickle
 
 # Load data
 ratings = pd.read_csv('u.data', sep='\t', names=['user_id', 'movie_id', 'rating', 'timestamp'])
@@ -16,7 +18,6 @@ movies = pd.read_csv('u.item', sep='|', names=item_cols, encoding='ISO-8859-1')
 data = pd.merge(ratings, movies, on='movie_id').fillna(0)
 
 # Encode and normalize
-from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 le_title = LabelEncoder()
 data['movie_title_encoded'] = le_title.fit_transform(data['movie_title'])
 scaler = MinMaxScaler()
@@ -39,18 +40,24 @@ with mlflow.start_run():
     }
     model = GridSearchCV(RandomForestRegressor(random_state=42), param_grid, cv=3)
     model.fit(X_train, y_train)
-    
+
     best_model = model.best_estimator_
     y_pred = best_model.predict(X_test)
     rmse = np.sqrt(mean_squared_error(y_test, y_pred))
-    
+
     mlflow.log_params(model.best_params_)
     mlflow.log_metric("rmse", rmse)
     mlflow.sklearn.log_model(best_model, "model")
-    
-    # Save artifacts
-    with open('title_encoder.pkl', 'wb') as f:
-        pickle.dump(le_title, f)
-    
-    with open('optimized_movie_rating_model.pkl', 'wb') as f:
-        pickle.dump(best_model, f)
+
+    # Set the RMSE threshold
+    max_rmse = 1.0  # Define your acceptable RMSE threshold
+
+    if rmse <= max_rmse:
+        # Save LabelEncoder and model
+        with open('title_encoder.pkl', 'wb') as f:
+            pickle.dump(le_title, f)
+        with open('optimized_movie_rating_model.pkl', 'wb') as f:
+            pickle.dump(best_model, f)
+        print(f"Model retrained and saved with RMSE: {rmse}")
+    else:
+        print(f"Model RMSE {rmse} exceeded threshold {max_rmse}. Model not updated.")

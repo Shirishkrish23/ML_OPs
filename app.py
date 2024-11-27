@@ -10,6 +10,7 @@ with open('optimized_movie_rating_model.pkl', 'rb') as file:
 
 # Load the LabelEncoder
 with open('title_encoder.pkl', 'rb') as file:
+    
     le_title = pickle.load(file)
 
 # Load the ratings and movies data
