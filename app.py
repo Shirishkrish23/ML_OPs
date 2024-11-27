@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import pickle
 import numpy as np
 import pandas as pd
+from prometheus_flask_exporter import PrometheusMetrics  # Import PrometheusMetrics
 
 # Load the trained model
 with open('optimized_movie_rating_model.pkl', 'rb') as file:
@@ -23,6 +24,7 @@ movies = pd.read_csv('u.item', sep='|', names=item_cols, encoding='ISO-8859-1')
 data = pd.merge(ratings, movies, on='movie_id')
 
 app = Flask(__name__)
+metrics = PrometheusMetrics(app)  # Initialize Prometheus metrics
 
 @app.route('/')
 def home():
@@ -56,7 +58,6 @@ def predict():
     # Since there may be multiple ratings, take the first one
     user_movie_row = user_movie_data.iloc[0]
 
-    # Extract features
     # Encode the movie title
     try:
         movie_title_encoded = le_title.transform([user_movie_row['movie_title']])[0]
@@ -64,12 +65,10 @@ def predict():
         return jsonify({'error': 'Movie title not recognized'}), 400
 
     # Get the genres as a list
-    genres = user_movie_row[item_cols[5:]].tolist()  # List of 19 genre flags
+    genres = user_movie_row[item_cols[5:]].tolist()  # List of genre flags
 
-    # Prepare the features as per the training
+    # Prepare the features
     features = [user_id, movie_title_encoded] + genres
-
-    # Ensure features are in the correct format
     features = np.array(features).reshape(1, -1)
 
     # Make prediction
