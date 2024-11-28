@@ -117,35 +117,36 @@ Monitoring is set up using Prometheus and Grafana:
 - Grafana: `http://localhost:3000/` (Default login: `admin` / `YourSecurePassword`)
 
 ## Project Structure
+```plaintext
 ML_OPs/
 ├── .github/
 │   └── workflows/
-│       └── ci-cd.yml                  # GitHub Actions CI/CD pipeline configuration
+│       └── ci-cd.yml
 ├── app/
-│   ├── __init__.py                     # Initialize Flask app and Prometheus metrics
-│   ├── app.py                          # Flask API implementation
+│   ├── __init__.py
+│   ├── app.py
 │   ├── models/
-│   │   ├── optimized_movie_rating_model.pkl  # Trained RandomForest model
-│   │   └── title_encoder.pkl                # LabelEncoder for movie titles
+│   │   ├── optimized_movie_rating_model.pkl
+│   │   └── title_encoder.pkl
 │   └── utils/
-│       └── data_loader.py              # Utility functions for data loading and preprocessing
+│       └── data_loader.py
 ├── tests/
-│   └── test_app.py                     # Unit tests for the Flask API
+│   └── test_app.py
 ├── scripts/
-│   └── retrain.py                      # Script for retraining the model
+│   └── retrain.py
 ├── notebooks/
-│   └── Model_movies.ipynb              # Jupyter Notebook for data exploration and model training
+│   └── Model_movies.ipynb
 ├── data/
-│   ├── u.data                          # User ratings dataset
-│   └── u.item                          # Movie information dataset
+│   ├── u.data
+│   └── u.item
 ├── config/
-│   └── prometheus.yml                  # Prometheus configuration for monitoring
+│   └── prometheus.yml
 ├── docker/
-│   ├── Dockerfile                      # Dockerfile for containerizing the Flask app
-│   └── docker-compose.yml              # Docker Compose configuration for multi-container setup
-├── .gitattributes                      # Git LFS configuration for tracking large files
-├── requirements.txt                    # Python dependencies
-└── README.md                           # Project documentation
+│   ├── Dockerfile
+│   └── docker-compose.yml
+├── .gitattributes
+├── requirements.txt
+└── README.md
 ## Usage
 
 - **API Interaction:** Use tools like `curl` or Postman to interact with the API endpoints.
