@@ -117,3 +117,15 @@ Monitoring is set up using Prometheus and Grafana:
 - Grafana: `http://localhost:3000/` (Default login: `admin` / `YourSecurePassword`)
 
 ## Project Structure
+ML_OPs/ ├── .github/ │ └── workflows/ │ └── ci-cd.yml ├── app.py ├── test_app.py ├── retrain.py ├── Model_movies.ipynb ├── docker-compose.yml ├── Dockerfile ├── prometheus.yml ├── requirements.txt ├── u.data ├── u.item ├── optimized_movie_rating_model.pkl ├── title_encoder.pkl └── README.md
+
+## Usage
+
+- **API Interaction:** Use tools like `curl` or Postman to interact with the API endpoints.
+- **Running Tests:** Execute `pytest` to run unit tests.
+- **Monitoring Metrics:** Access Prometheus and Grafana dashboards to monitor application performance and metrics.
+- **Automated Deployment:** Commit and push changes to the `main` branch to trigger the CI/CD pipeline for automated testing, building, and deployment.
+
+## License
+
+This project is licensed under the MIT License.
