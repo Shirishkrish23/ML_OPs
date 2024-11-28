@@ -113,8 +113,8 @@ Monitoring is set up using Prometheus and Grafana:
 - **Grafana** visualizes the metrics collected by Prometheus.
 
 **Access Points:**
-- Prometheus: `http://localhost:9090/`
-- Grafana: `http://localhost:3000/` (Default login: `admin` / `YourSecurePassword`)
+- Prometheus: `http://vm_public_ip:9090/`
+- Grafana: `http://vm_public_ip:3000/` (Default login: `admin` / `YourSecurePassword`)
 - 
 ## Usage
 
