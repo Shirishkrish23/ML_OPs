@@ -17,7 +17,7 @@ COPY optimized_movie_rating_model.pkl title_encoder.pkl /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose ports
-EXPOSE 5000 9090 3000
+EXPOSE 5000 
 
 # Define the command to run the app
 
