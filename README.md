@@ -117,8 +117,35 @@ Monitoring is set up using Prometheus and Grafana:
 - Grafana: `http://localhost:3000/` (Default login: `admin` / `YourSecurePassword`)
 
 ## Project Structure
-ML_OPs/ ├── .github/ │ └── workflows/ │ └── ci-cd.yml ├── app.py ├── test_app.py ├── retrain.py ├── Model_movies.ipynb ├── docker-compose.yml ├── Dockerfile ├── prometheus.yml ├── requirements.txt ├── u.data ├── u.item ├── optimized_movie_rating_model.pkl ├── title_encoder.pkl └── README.md
-
+ML_OPs/
+├── .github/
+│   └── workflows/
+│       └── ci-cd.yml                  # GitHub Actions CI/CD pipeline configuration
+├── app/
+│   ├── __init__.py                     # Initialize Flask app and Prometheus metrics
+│   ├── app.py                          # Flask API implementation
+│   ├── models/
+│   │   ├── optimized_movie_rating_model.pkl  # Trained RandomForest model
+│   │   └── title_encoder.pkl                # LabelEncoder for movie titles
+│   └── utils/
+│       └── data_loader.py              # Utility functions for data loading and preprocessing
+├── tests/
+│   └── test_app.py                     # Unit tests for the Flask API
+├── scripts/
+│   └── retrain.py                      # Script for retraining the model
+├── notebooks/
+│   └── Model_movies.ipynb              # Jupyter Notebook for data exploration and model training
+├── data/
+│   ├── u.data                          # User ratings dataset
+│   └── u.item                          # Movie information dataset
+├── config/
+│   └── prometheus.yml                  # Prometheus configuration for monitoring
+├── docker/
+│   ├── Dockerfile                      # Dockerfile for containerizing the Flask app
+│   └── docker-compose.yml              # Docker Compose configuration for multi-container setup
+├── .gitattributes                      # Git LFS configuration for tracking large files
+├── requirements.txt                    # Python dependencies
+└── README.md                           # Project documentation
 ## Usage
 
 - **API Interaction:** Use tools like `curl` or Postman to interact with the API endpoints.
@@ -128,4 +155,4 @@ ML_OPs/ ├── .github/ │ └── workflows/ │ └── ci-cd.yml ├�
 
 ## License
 
-This project is licensed under the MIT License.
+NULL
