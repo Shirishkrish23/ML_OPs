@@ -60,19 +60,34 @@ jobs:
           username: ${{ secrets.VM_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            # Install Docker if not installed
+            if ! [ -x "$(command -v docker)" ]; then
+              curl -fsSL https://get.docker.com -o get-docker.sh
+              sh get-docker.sh
+              sudo usermod -aG docker $USER
+            fi
+
             # Install Docker Compose if not installed
             if ! [ -x "$(command -v docker-compose)" ]; then
-              curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-              chmod +x /usr/local/bin/docker-compose
+              sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
             fi
 
             # Navigate to the app directory
-            mkdir -p /home/${{ secrets.VM_USERNAME }}/movie-recommender
-            cd /home/${{ secrets.VM_USERNAME }}/movie-recommender
+            cd /home/${{ secrets.VM_USERNAME }}
 
-            # Pull the latest images and start services
+            # Clone or update the repository
+            if [ -d "movie-recommender" ]; then
+              cd movie-recommender
+              git pull origin main
+            else
+              git clone https://github.com/shirishkrish23/ML_OPs.git movie-recommender
+              cd movie-recommender
+            fi
+
+            # Update Docker Compose services
             docker-compose pull
-            docker-compose up -d
+            docker-compose up -d --build
 
   retrain-model:
     runs-on: ubuntu-latest
@@ -82,6 +97,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+        with:
+          lfs: true
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -94,18 +111,32 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Retraining Script
-        env:
-          GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
         run: |
           python retrain.py
 
       - name: Commit and Push Updated Model
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Update model after retraining"
+          file_pattern: |
+            optimized_movie_rating_model.pkl
+            title_encoder.pkl
+
+      - name: Build Updated Docker Image
         run: |
-          git config --local user.email "actions@users.noreply.github.com"
-          git config --local user.name "GitHub Actions"
-          git add optimized_movie_rating_model.pkl title_encoder.pkl
-          git commit -m "Update model after retraining" || echo "No changes to commit"
-          git push origin main
+          docker build -t shirishkrishna/movie-recommender:${{ github.sha }} .
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Updated Docker Image
+        run: |
+          docker push shirishkrishna/movie-recommender:${{ github.sha }}
+          docker tag shirishkrishna/movie-recommender:${{ github.sha }} shirishkrishna/movie-recommender:latest
+          docker push shirishkrishna/movie-recommender:latest
 
       - name: Deploy Updated Model to VM
         uses: appleboy/ssh-action@v0.1.6
@@ -117,8 +148,9 @@ jobs:
             # Navigate to the app directory
             cd /home/${{ secrets.VM_USERNAME }}/movie-recommender
 
-            # Pull the latest images if retraining affects the Docker image
-            docker-compose pull
+            # Pull the latest code
+            git pull origin main
 
-            # Restart the Flask app to load the new model
-            docker-compose restart flask_app
+            # Update Docker Compose services
+            docker-compose pull
+            docker-compose up -d --build
