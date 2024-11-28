@@ -77,6 +77,14 @@ def predict():
 
     # Return the prediction
     return jsonify({'prediction': prediction.tolist()})
-
+@app.route('/routes')
+def list_routes():
+    import urllib
+    output = []
+    for rule in app.url_map.iter_rules():
+        methods = ','.join(rule.methods)
+        line = urllib.parse.unquote(f"{rule.endpoint} {rule.rule} {methods}")
+        output.append(line)
+    return '<br>'.join(output)
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

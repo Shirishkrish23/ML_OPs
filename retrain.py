@@ -1,5 +1,3 @@
-import mlflow
-import mlflow.sklearn
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split, GridSearchCV
@@ -28,36 +26,30 @@ target = 'rating'
 
 X_train, X_test, y_train, y_test = train_test_split(data[features], data[target], test_size=0.2, random_state=42)
 
-# MLflow Tracking
-mlflow.set_tracking_uri("http://localhost:5001")
-mlflow.set_experiment("MovieRatingPrediction")
+param_grid = {
+    'n_estimators': [100, 200],
+    'max_depth': [20, None],
+    'min_samples_split': [10]
+}
 
-with mlflow.start_run():
-    param_grid = {
-        'n_estimators': [100, 200],
-        'max_depth': [20, None],
-        'min_samples_split': [10]
-    }
-    model = GridSearchCV(RandomForestRegressor(random_state=42), param_grid, cv=3)
-    model.fit(X_train, y_train)
+# Train the model
+model = GridSearchCV(RandomForestRegressor(random_state=42), param_grid, cv=3)
+model.fit(X_train, y_train)
 
-    best_model = model.best_estimator_
-    y_pred = best_model.predict(X_test)
-    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+best_model = model.best_estimator_
+y_pred = best_model.predict(X_test)
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+print(f"RMSE: {rmse}")
 
-    mlflow.log_params(model.best_params_)
-    mlflow.log_metric("rmse", rmse)
-    mlflow.sklearn.log_model(best_model, "model")
+# Set the RMSE threshold
+max_rmse = 1.2  # Define your acceptable RMSE threshold
 
-    # Set the RMSE threshold
-    max_rmse = 1.0  # Define your acceptable RMSE threshold
-
-    if rmse <= max_rmse:
-        # Save LabelEncoder and model
-        with open('title_encoder.pkl', 'wb') as f:
-            pickle.dump(le_title, f)
-        with open('optimized_movie_rating_model.pkl', 'wb') as f:
-            pickle.dump(best_model, f)
-        print(f"Model retrained and saved with RMSE: {rmse}")
-    else:
-        print(f"Model RMSE {rmse} exceeded threshold {max_rmse}. Model not updated.")
+if rmse <= max_rmse:
+    # Save LabelEncoder and model
+    with open('title_encoder.pkl', 'wb') as f:
+        pickle.dump(le_title, f)
+    with open('optimized_movie_rating_model.pkl', 'wb') as f:
+        pickle.dump(best_model, f)
+    print(f"Model retrained and saved with RMSE: {rmse}")
+else:
+    print(f"Model RMSE {rmse} exceeded threshold {max_rmse}. Model not updated.")

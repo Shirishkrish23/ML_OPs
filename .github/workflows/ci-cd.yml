@@ -10,6 +10,7 @@ on:
 
 jobs:
   build-and-deploy:
+    if: ${{ !contains(github.event.head_commit.message, 'Update model after retraining') }}
     runs-on: ubuntu-latest
 
     steps:
@@ -85,9 +86,13 @@ jobs:
               cd movie-recommender
             fi
 
+            # Set up Git LFS and pull LFS files
+            git lfs install
+            git lfs pull
+
             # Update Docker Compose services
             docker-compose pull
-            docker-compose up -d --build
+            docker-compose up -d
 
   retrain-model:
     runs-on: ubuntu-latest
@@ -151,6 +156,10 @@ jobs:
             # Pull the latest code
             git pull origin main
 
+            # Set up Git LFS and pull LFS files
+            git lfs install
+            git lfs pull
+
             # Update Docker Compose services
             docker-compose pull
-            docker-compose up -d --build
+            docker-compose up -d
