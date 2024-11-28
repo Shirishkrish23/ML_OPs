@@ -132,31 +132,16 @@ ML_OPs/
 ├── .github/
 │   └── workflows/
 │       └── ci-cd.yml
-├── app/
-│   ├── __init__.py
-│   ├── app.py
-│   ├── models/
-│   │   ├── optimized_movie_rating_model.pkl
-│   │   └── title_encoder.pkl
-│   └── utils/
-│       └── data_loader.py
-├── tests/
-│   └── test_app.py
-├── scripts/
-│   └── retrain.py
-├── notebooks/
-│   └── Model_movies.ipynb
-├── data/
-│   ├── u.data
-│   └── u.item
-├── config/
-│   └── prometheus.yml
-├── docker/
-│   ├── Dockerfile
-│   └── docker-compose.yml
+├── app.py
+├── test_app.py
+├── retrain.py
+├── Model_movies.ipynb
+├── u.data
+├── u.item
+├── prometheus.yml
+├── Dockerfile
+├── docker-compose.yml
 ├── .gitattributes
 ├── requirements.txt
 └── README.md
-
-
 
