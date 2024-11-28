@@ -42,7 +42,7 @@ rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 print(f"RMSE: {rmse}")
 
 # Set the RMSE threshold
-max_rmse = 1.2  # Define your acceptable RMSE threshold
+max_rmse = 1.15  # Define your acceptable RMSE threshold
 
 if rmse <= max_rmse:
     # Save LabelEncoder and model
