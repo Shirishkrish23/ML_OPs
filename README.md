@@ -115,6 +115,16 @@ Monitoring is set up using Prometheus and Grafana:
 **Access Points:**
 - Prometheus: `http://localhost:9090/`
 - Grafana: `http://localhost:3000/` (Default login: `admin` / `YourSecurePassword`)
+- 
+## Usage
+
+- **API Interaction:** Use tools like `curl` or Postman to interact with the API endpoints.
+- **Running Tests:** Execute `pytest` to run unit tests.
+- **Monitoring Metrics:** Access Prometheus and Grafana dashboards to monitor application performance and metrics.
+- **Automated Deployment:** Commit and push changes to the `main` branch to trigger the CI/CD pipeline for automated testing, building, and deployment.
+
+## License
+NULL
 
 ## Project Structure
 ```plaintext
@@ -147,13 +157,6 @@ ML_OPs/
 ├── .gitattributes
 ├── requirements.txt
 └── README.md
-## Usage
 
-- **API Interaction:** Use tools like `curl` or Postman to interact with the API endpoints.
-- **Running Tests:** Execute `pytest` to run unit tests.
-- **Monitoring Metrics:** Access Prometheus and Grafana dashboards to monitor application performance and metrics.
-- **Automated Deployment:** Commit and push changes to the `main` branch to trigger the CI/CD pipeline for automated testing, building, and deployment.
 
-## License
 
-NULL
